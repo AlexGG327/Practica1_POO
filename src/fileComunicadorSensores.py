@@ -1,9 +1,10 @@
 import json
 import paho.mqtt.client as mqtt
 
+from fileRefresh import clearConsole
+
 # Configuración del cliente MQTT
   # Temas a los que se suscribirá el cliente
-
 
 class ComunicadorSensores:
     def __init__(self, broker, port, topics):
@@ -24,6 +25,8 @@ class ComunicadorSensores:
 
     # Callback cuando se recibe un mensaje en los temas suscritos
     def on_message(self, client, userdata, msg):
+        clearConsole()
+        print("Ctrl+C para salir")
         print(f"Mensaje recibido en el tema '{msg.topic}':")
         print(msg.payload.decode("utf-8"))
 

@@ -11,6 +11,7 @@ import re
 
 from fileComunicador import Comunicador
 from fileComunicadorSensores import ComunicadorSensores
+from fileRefresh import clearConsole
 
 class InterfazTerminal:
     def __init__(self):
@@ -68,7 +69,7 @@ class InterfazTerminal:
 
         ordenador.connect_mqtt()
         print("Escuchando...")
-        client.connect(self.BROKERsensores, self.mqtt_port, 60)
+        
         time.sleep(1)
             
         """
@@ -79,14 +80,17 @@ class InterfazTerminal:
             ordenador.send_message(BROADCAST_NUM)
             time.sleep(4)
         """
+        
         try:
             while True:
+                clearConsole()
                 print("Menu:")
                 print("1. Enviar mensaje.")
                 print("2. Enviar posición.")
                 print("3. Solicitar info de nodos.")
                 print("4. Escuchar sensores.")
-                print("5. Desconectar.")
+                print("5. Clear console.")
+                print("6. Desconectar.")
                 opcion = input("Selccione una opción: ")
                 if opcion == "1":
                     mensaje = input("Escriba el mensaje a enviar: ")
@@ -106,6 +110,7 @@ class InterfazTerminal:
                 elif opcion == "3":
                     ordenador.send_node_info(BROADCAST_NUM, want_response=False)
                 elif opcion == "4":
+                    client.connect(self.BROKERsensores, self.mqtt_port, 60)
                     print("Esperando mensajes... Presiona Ctrl+C para salir")
                     try:
                         client.loop_forever()  # Mantener el cliente en ejecución
@@ -113,6 +118,8 @@ class InterfazTerminal:
                         print("Desconectando del broker...")
                         client.disconnect()
                 elif opcion == "5":
+                    print("Consola limpiada.")
+                elif opcion == "6":
                     print("Desconectando...")
                     ordenador.disconnect_mqtt()
                     break
