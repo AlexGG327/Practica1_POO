@@ -2,6 +2,9 @@ import json
 import paho.mqtt.client as mqtt
 
 from fileRefresh import clearConsole
+from fileGuardado import guardarDatosSensores
+
+nombreArchivo = "DatosSensores.json"
 
 # Configuración del cliente MQTT
   # Temas a los que se suscribirá el cliente
@@ -34,6 +37,10 @@ class ComunicadorSensores:
             # Decodificar y convertir el mensaje de JSON a diccionario
             payload = json.loads(msg.payload.decode("utf-8"))
             print(json.dumps(payload, indent=4))  # Mostrar el mensaje formateado
+
+            guardarDatosSensores(payload, nombreArchivo)
+            #print(f"Datos guardados en {nombreArchivo}")
+
         except json.JSONDecodeError as e:
             print(f"Error decodificando JSON: {e}")
 

@@ -21,7 +21,7 @@ class Dispositivo:
         self.lat = lat
         self.lon = lon
         self.alt = alt
-        self.random_hex_chars = ''.join(random.choices('0123456789abcdef', k=4))
+        self.random_hex_chars = "a8a1"
         self.node_name = '!abcd' + self.random_hex_chars
         self.node_number = int(self.node_name.replace("!", ""), 16)
         self.set_topic()

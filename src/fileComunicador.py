@@ -20,6 +20,12 @@ print_node_position = True
 print_node_telemetry = True
 
 from fileDispositivo import Dispositivo
+from fileGuardado import guardarDatosSensores
+from fileGuardado import guardarContactos
+
+def num_to_id(num):
+    """Convierte un número de nodo Meshtastic a su representación tipo !abcd1234"""
+    return f"!{num:08x}"
 
 class Comunicador:
     def __init__(self, mqtt_port, mqtt_broker, root_topic, channel, key, mqtt_username, mqtt_password, message_text, client_short_name, client_long_name, client_hw_model, lat, lon, alt):
@@ -281,7 +287,33 @@ class Comunicador:
             pb_str = str(pb).replace('\n', ' ').replace('\r', ' ').strip()
             mp.decoded.payload = pb_str.encode("utf-8")
         print(mp)
+        #print(mp.decoded.payload.decode("utf-8"))
+        #print(mp.decoded.portnum)
 
+        from_node = getattr(mp, "from")
+        contacto = num_to_id(from_node)
+
+        guardarContactos(contacto, "contactos.json")
+
+        if mp.decoded.portnum == 1:
+            # Mesaje de texto
+            nombreArchivo = "mensaje_texto_recibido.json"
+            guardarDatosSensores(mp.decoded.payload.decode("utf-8"), nombreArchivo)
+        
+        elif mp.decoded.portnum == 3:
+            # Mesaje de posición GPS
+            nombreArchivo = "mensaje_posicion_recibido.json"
+            guardarDatosSensores(mp.decoded.payload.decode("utf-8"), nombreArchivo)
+
+        elif mp.decoded.portnum == 4:
+            # Mesaje de telemetría
+            nombreArchivo = "mensaje_telemetria_recibido.json"
+            guardarDatosSensores(mp.decoded.payload.decode("utf-8"), nombreArchivo)
+
+        else:
+            nombreArchivo = "mensaje_otro_recibido.json"
+            guardarDatosSensores(mp.decoded.payload.decode("utf-8"), nombreArchivo)
+        
     def decode_encrypted(self, mp): #Comunicador
         # Desencripta el mensaje    
         try:

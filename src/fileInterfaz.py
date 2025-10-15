@@ -82,12 +82,17 @@ class InterfazTerminal:
         """
         
         try:
+            ordenador.send_node_info(BROADCAST_NUM, want_response=False)
+            time.sleep(4)
+            ordenador.mensage_text = "AAAA"
+            ordenador.send_message(BROADCAST_NUM)
+            time.sleep(4)
             while True:
-                clearConsole()
+                #clearConsole()
                 print("Menu:")
                 print("1. Enviar mensaje.")
                 print("2. Enviar posición.")
-                print("3. Solicitar info de nodos.")
+                print("3. Enviar info de nodos.")
                 print("4. Escuchar sensores.")
                 print("5. Clear console.")
                 print("6. Desconectar.")
@@ -118,6 +123,7 @@ class InterfazTerminal:
                         print("Desconectando del broker...")
                         client.disconnect()
                 elif opcion == "5":
+                    clearConsole()
                     print("Consola limpiada.")
                 elif opcion == "6":
                     print("Desconectando...")
