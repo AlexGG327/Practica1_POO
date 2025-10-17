@@ -8,54 +8,19 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 import base64
 import re
+import json
 
 from fileComunicador import Comunicador
 from fileComunicadorSensores import ComunicadorSensores
 from fileRefresh import clearConsole
 
+with open("static/config.json", "r", encoding="utf-8") as archivo:
+    config = json.load(archivo)
+
 class InterfazTerminal:
-    def __init__(self):
-        mqtt_port = 1883
-        mqtt_broker = "mqtt.meshtastic.org"
-        root_topic = "msh/EU_868/ES/2/e/"
-        mqtt_username = "meshdev"
-        mqtt_password = "large4cats"
-        channel = "TestMQTT"
-        key = "ymACgCy9Tdb8jHbLxUxZ/4ADX+BWLOGVihmKHcHTVyo="
-        client_short_name = "AGG"
-        client_long_name = "Alejandro"
-        client_hw_model = 255
-        message_text = "Hola"
+    def main(self):
 
-        lat = "0"
-        lon = "0"
-        alt = "0"
-
-        BROKERsensores = "broker.emqx.io"  # Cambia esto por tu broker MQTT
-        TOPICSsensores = ["sensor/data/sen55", "sensor/data/gas_sensor"]  # Temas a los que se suscribirá el cliente
-
-        self.mqtt_port = mqtt_port
-        self.mqtt_broker = mqtt_broker
-        self.mqtt_username = mqtt_username
-        self.mqtt_password = mqtt_password
-        self.root_topic = root_topic
-        self.channel = channel
-        self.key = key
-        self.client_short_name = client_short_name
-        self.client_long_name = client_long_name
-        self.client_hw_model = client_hw_model
-        self.message_text = message_text
-
-        self.lat = lat
-        self.lon = lon
-        self.alt = alt
-
-        self.BROKERsensores = BROKERsensores
-        self.TOPICSsensores = TOPICSsensores
-
-    def main(self): #Interfaz
-
-        ordenador = Comunicador(self.mqtt_port, self.mqtt_broker, self.root_topic, self.channel, self.key, self.mqtt_username, self.mqtt_password, self.message_text, self.client_short_name, self.client_long_name, self.client_hw_model, self.lat, self.lon, self.alt)
+        ordenador = Comunicador()
         
         ordenadorSensores = ComunicadorSensores(self.BROKERsensores, self.mqtt_port, self.TOPICSsensores)
 
@@ -71,22 +36,11 @@ class InterfazTerminal:
         print("Escuchando...")
         
         time.sleep(1)
-            
-        """
-            ordenador.send_node_info(BROADCAST_NUM, want_response=False)
-            time.sleep(4)
-            ordenador.send_position(BROADCAST_NUM)
-            time.sleep(4)
-            ordenador.send_message(BROADCAST_NUM)
-            time.sleep(4)
-        """
         
         try:
             ordenador.send_node_info(BROADCAST_NUM, want_response=False)
             time.sleep(4)
-            ordenador.mensage_text = "AAAA"
             ordenador.send_message(BROADCAST_NUM)
-            time.sleep(4)
             while True:
                 #clearConsole()
                 print("Menu:")

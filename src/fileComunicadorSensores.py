@@ -2,7 +2,7 @@ import json
 import paho.mqtt.client as mqtt
 
 from fileRefresh import clearConsole
-from fileGuardado import guardarDatosSensores
+from fileDispositivo import Dispositivo
 
 nombreArchivo = "DatosSensores.json"
 
@@ -11,9 +11,11 @@ nombreArchivo = "DatosSensores.json"
 
 class ComunicadorSensores:
     def __init__(self, broker, port, topics):
-        self.broker = broker
-        self.port = port
-        self.topics = topics
+        with open("static/config.json", "r", encoding="utf-8") as archivo:
+            config = json.load(archivo)
+        self.broker = config["BROKERsensores"]
+        self.port = config["mqtt_port"]
+        self.topics = config["TOPICSsensores"]
         
     # Callback cuando se establece la conexión con el broker
     def on_connect(self, client, userdata, flags, rc):
@@ -43,29 +45,3 @@ class ComunicadorSensores:
 
         except json.JSONDecodeError as e:
             print(f"Error decodificando JSON: {e}")
-
-"""
-BROKER = "broker.emqx.io"  # Cambia esto por tu broker MQTT
-PORT = 1883  # Puerto del broker MQTT
-TOPICS = ["sensor/data/sen55", "sensor/data/gas_sensor"]
-
-ordenadorSensores = ComunicadorSensores(BROKER, PORT, TOPICS)
-
-# Crear un cliente MQTT
-client = mqtt.Client()
-
-# Asignar las funciones de callback
-client.on_connect = ordenadorSensores.on_connect
-client.on_message = ordenadorSensores.on_message
-
-# Conectar al broker MQTT
-client.connect(BROKER, PORT, 60)
-
-# Bucle principal para mantener la conexión y escuchar mensajes
-print("Esperando mensajes... Presiona Ctrl+C para salir")
-try:
-    client.loop_forever()  # Mantener el cliente en ejecución
-except KeyboardInterrupt:
-    print("Desconectando del broker...")
-    client.disconnect()
-"""

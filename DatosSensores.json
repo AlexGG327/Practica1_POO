@@ -46,5 +46,69 @@
         "GM302B": 202.0,
         "GM502B": 214.0,
         "GM702B": 343.0
+    },
+    {
+        "MassConcentrationPm1p0": 11.1,
+        "MassConcentrationPm2p5": 11.9,
+        "MassConcentrationPm4p0": 12.1,
+        "MassConcentrationPm10p0": 12.1,
+        "AmbientHumidity": 59.38,
+        "AmbientTemperature": 22.23,
+        "VocIndex": 141.0,
+        "NoxIndex": 1.0
+    },
+    {
+        "GM102B": 121.0,
+        "GM302B": 191.0,
+        "GM502B": 205.0,
+        "GM702B": 329.0
+    },
+    {
+        "MassConcentrationPm1p0": 8.8,
+        "MassConcentrationPm2p5": 9.2,
+        "MassConcentrationPm4p0": 9.2,
+        "MassConcentrationPm10p0": 9.2,
+        "AmbientHumidity": 61.21,
+        "AmbientTemperature": 21.31,
+        "VocIndex": 69.0,
+        "NoxIndex": 1.0
+    },
+    {
+        "GM102B": 112.0,
+        "GM302B": 174.0,
+        "GM502B": 188.0,
+        "GM702B": 324.0
+    },
+    {
+        "MassConcentrationPm1p0": 8.7,
+        "MassConcentrationPm2p5": 9.1,
+        "MassConcentrationPm4p0": 9.1,
+        "MassConcentrationPm10p0": 9.1,
+        "AmbientHumidity": 61.2,
+        "AmbientTemperature": 21.31,
+        "VocIndex": 69.0,
+        "NoxIndex": 1.0
+    },
+    {
+        "GM102B": 112.0,
+        "GM302B": 174.0,
+        "GM502B": 188.0,
+        "GM702B": 325.0
+    },
+    {
+        "MassConcentrationPm1p0": 8.9,
+        "MassConcentrationPm2p5": 9.4,
+        "MassConcentrationPm4p0": 9.4,
+        "MassConcentrationPm10p0": 9.4,
+        "AmbientHumidity": 60.86,
+        "AmbientTemperature": 21.34,
+        "VocIndex": 68.0,
+        "NoxIndex": 1.0
+    },
+    {
+        "GM102B": 111.0,
+        "GM302B": 174.0,
+        "GM502B": 187.0,
+        "GM702B": 323.0
     }
 ]

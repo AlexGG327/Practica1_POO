@@ -15,7 +15,7 @@ from fileInterfaz import InterfazTerminal
 #### Debug Options
 debug = True
 auto_reconnect = True
-auto_reconnect_delay = 1 # seconds
+auto_reconnect_delay = 1 #seconds
 print_service_envelope = False
 print_message_packet = False
 
