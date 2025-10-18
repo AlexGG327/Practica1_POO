@@ -10,7 +10,7 @@ import base64
 import re
 import json
 
-from fileDispositivo import Dispositivo
+from src.fileDispositivo import Dispositivo
 
 def num_to_id(num):
     """Convierte un número de nodo Meshtastic a su representación tipo !abcd1234"""
@@ -51,7 +51,7 @@ class Comunicador:
         self.global_message_id = random.getrandbits(32)
 
         self.client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id="", clean_session=True, userdata=None)
-        self.dispositivo = Dispositivo(self.root_topic, self.channel)
+        self.dispositivo = Dispositivo(self.root_topic, self.channel, self.debug)
 
     # Conectar al servidor MQTT
 
@@ -111,8 +111,17 @@ class Comunicador:
 
     # Enviar mensajes
 
-    def send_message(self, destination_id):
-        #destination_id = 719928777
+    def send_message(self, destination_id, Directo_o_noDirecto):
+        if Directo_o_noDirecto == True:
+            with open("data/contactos.json", "r", encoding="utf-8") as archivo:
+                contactos = json.load(archivo)
+                print("Contacto a elegir (escribe el numero (0-...)):")
+                numero = -1
+                for contacto in contactos:
+                    numero = numero + 1
+                    print(f"Numero: {numero} Nombre: {contacto['nombre']}")
+                eleccion = int(input("Elige el numero del contacto: "))
+                destination_id = contactos[eleccion]["numero"]
         if not self.client.is_connected():
             self.connect_mqtt()
 
@@ -278,32 +287,43 @@ class Comunicador:
             # Clean and update the payload
             pb_str = str(pb).replace('\n', ' ').replace('\r', ' ').strip()
             mp.decoded.payload = pb_str.encode("utf-8")
-        print(mp)
-        #print(mp.decoded.payload.decode("utf-8"))
-        #print(mp.decoded.portnum)
 
         from_node = getattr(mp, "from")
         contacto = num_to_id(from_node)
 
-        self.dispositivo.guardarContactos(contacto, "contactos.json")
+        self.dispositivo.guardarContactos(contacto, "data/contactos.json", from_node)
+
+        contacto = Dispositivo.queContactoEs(from_node, "data/contactos.json")
 
         if mp.decoded.portnum == 1:
+            print("Mensaje recibido de:", contacto)
+            print("Mensaje: ", mp.decoded.payload.decode("utf-8"))
+            print("\n")
             # Mesaje de texto
-            nombreArchivo = "mensaje_texto_recibido.json"
+            nombreArchivo = "data/mensaje_texto_recibido.json"
             self.dispositivo.guardarDatos(mp.decoded.payload.decode("utf-8"), nombreArchivo)
         
         elif mp.decoded.portnum == 3:
+            print("Posicion recibida de:", contacto)
+            print("Posicion: ", mp.decoded.payload.decode("utf-8"))
+            print("\n")
             # Mesaje de posición GPS
-            nombreArchivo = "mensaje_posicion_recibido.json"
+            nombreArchivo = "data/mensaje_posicion_recibido.json"
             self.dispositivo.guardarDatos(mp.decoded.payload.decode("utf-8"), nombreArchivo)
 
         elif mp.decoded.portnum == 4:
-            # Mesaje de telemetría
-            nombreArchivo = "mensaje_telemetria_recibido.json"
+            print("Telemetria recibida de:", contacto)
+            print("Telemetria: ", mp.decoded.payload.decode("utf-8"))
+            print("\n")
+            # Mesaje de telemetria
+            nombreArchivo = "data/mensaje_telemetria_recibido.json"
             self.dispositivo.guardarDatos(mp.decoded.payload.decode("utf-8"), nombreArchivo)
 
         else:
-            nombreArchivo = "mensaje_otro_recibido.json"
+            print("Mensaje de otro tipo recibido de:", contacto)
+            print("Mensaje:", mp.decoded.payload.decode("utf-8"))
+            print("\n")
+            nombreArchivo = "data/mensaje_otro_recibido.json"
             self.dispositivo.guardarDatos(mp.decoded.payload.decode("utf-8"), nombreArchivo)
         
     def decode_encrypted(self, mp):

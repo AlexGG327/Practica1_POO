@@ -9,16 +9,13 @@ from cryptography.hazmat.backends import default_backend
 import base64
 import re
 import json
-
-debug = True
+import os
 
 class Dispositivo:
-    def __init__(self, root_topic, channel):
-        self.tls_configured = False
-
+    def __init__(self, root_topic, channel, debug):
         self.root_topic = root_topic
         self.channel = channel
-
+        self.debug = debug
         self.random_hex_chars = "a8a1"
         self.node_name = '!abcd' + self.random_hex_chars
         self.node_number = int(self.node_name.replace("!", ""), 16)
@@ -26,45 +23,70 @@ class Dispositivo:
 
     def set_topic(self):
         # Prepara variables para MQTT
-        if debug: print("set_topic")
+        if self.debug: print("set_topic")
         self.node_name = '!' + hex(self.node_number)[2:] # Identificador del nodo, en hexadecimal  para MQTT
         self.subscribe_topic = self.root_topic + self.channel + "/#" # Donde escuchar
         self.publish_topic = self.root_topic + self.channel + "/" + self.node_name # Donde publicar
-    
+
+    @staticmethod
+    def clearConsole():
+        command = 'clear'
+        if os.name in ('nt', 'dos'):
+            command = 'cls'
+        os.system(command)
+
     @staticmethod
     def guardarDatos(nuevo_datos, nombreArchivo):
-
-        with open(nombreArchivo, "r", encoding = "utf-8") as archivo:
-            try:
-                datosExistentes = json.load(archivo)
-                if not isinstance(datosExistentes, list):
-                    datosExistentes = [datosExistentes]
-            except json.JSONDecodeError:
-                datosExistentes = []
-        datosExistentes.append(nuevo_datos)
-
-        with open(nombreArchivo, "w", encoding = "utf-8") as archivo:
-            json.dump(datosExistentes, archivo, indent = 4, ensure_ascii = False)
-
-    @staticmethod
-    def guardarContactos(contacto, nombreArchivo):
         try:
-            with open(nombreArchivo, "r", encoding = "utf-8") as archivo:
-                datosExistentes = json.load(archivo)
-                if not isinstance(datosExistentes, list):
-                    datosExistentes = [datosExistentes]
-        except json.JSONDecodeError:
+            with open(nombreArchivo, "r", encoding="utf-8") as archivo:
+                try:
+                    datosExistentes = json.load(archivo)
+                    if not isinstance(datosExistentes, list):
+                        datosExistentes = [datosExistentes]
+                except json.JSONDecodeError:
+                    datosExistentes = []
+        except FileNotFoundError:
             datosExistentes = []
 
-        # Verificar si el contacto ya existe
+        datosExistentes.append(nuevo_datos)
+
+        with open(nombreArchivo, "w", encoding="utf-8") as archivo:
+            json.dump(datosExistentes, archivo, indent=4, ensure_ascii=False)
+
+    @staticmethod
+    def guardarContactos(contacto, nombreArchivo, numero_nodo):
+        try:
+            with open(nombreArchivo, "r", encoding = "utf-8") as archivo:
+                try:
+                    datosExistentes = json.load(archivo)
+                    if not isinstance(datosExistentes, list):
+                        datosExistentes = [datosExistentes]
+                except json.JSONDecodeError:
+                    datosExistentes = []
+        except FileNotFoundError:
+            datosExistentes = []
+
+        # Verifica si el contacto existe
         for existente in datosExistentes:
             if contacto == existente["codigo"]:
-                #print("El contacto ya existe:", existente)
                 return
             
-        nuevo_contacto = {"codigo": contacto, "nombre": ""}
+        nuevo_contacto = {"codigo": contacto, "numero": numero_nodo, "nombre": ""}
         datosExistentes.append(nuevo_contacto)
         print("Nuevo contacto conseguido")
 
         with open(nombreArchivo, "w", encoding = "utf-8") as archivo:
             json.dump(datosExistentes, archivo, indent = 4, ensure_ascii = False)
+
+    @staticmethod
+    def queContactoEs(numero_nodo, nombreArchivo):
+        try:
+            with open(nombreArchivo, "r", encoding="utf-8") as archivo:
+                datosExistentes = json.load(archivo)
+                for existente in datosExistentes:
+                    if numero_nodo == existente["numero"]:
+                        return existente["nombre"]
+        except (FileNotFoundError, json.JSONDecodeError):
+            pass
+
+        return "!" + hex(numero_nodo)[2:]

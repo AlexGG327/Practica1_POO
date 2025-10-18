@@ -10,81 +10,95 @@ import base64
 import re
 import json
 
-from fileComunicador import Comunicador
-from fileComunicadorSensores import ComunicadorSensores
-from fileRefresh import clearConsole
+from src.fileComunicador import Comunicador
+from src.fileComunicadorSensores import ComunicadorSensores
+from src.fileDispositivo import Dispositivo
 
-with open("static/config.json", "r", encoding="utf-8") as archivo:
-    config = json.load(archivo)
 
 class InterfazTerminal:
-    def main(self):
+    def __init__(self):
+        self.ordenador = Comunicador()
 
-        ordenador = Comunicador()
-        
-        ordenadorSensores = ComunicadorSensores(self.BROKERsensores, self.mqtt_port, self.TOPICSsensores)
+        with open("static/config.json", "r", encoding="utf-8") as archivo:
+            config = json.load(archivo)
+        self.BROKERsensores = config["BROKERsensores"]
+        self.mqtt_port = config["mqtt_port"]
+        ordenadorSensores = ComunicadorSensores()
 
-        ordenador.client.on_connect = ordenador.on_connect
-        ordenador.client.on_disconnect = ordenador.on_disconnect
-        ordenador.client.on_message = ordenador.on_message
+        self.ordenador.client.on_connect = self.ordenador.on_connect
+        self.ordenador.client.on_disconnect = self.ordenador.on_disconnect
+        self.ordenador.client.on_message = self.ordenador.on_message
 
-        client = mqtt.Client()
-        client.on_connect = ordenadorSensores.on_connect
-        client.on_message = ordenadorSensores.on_message
+        self.client = mqtt.Client()
+        self.client.on_connect = ordenadorSensores.on_connect
+        self.client.on_message = ordenadorSensores.on_message
 
-        ordenador.connect_mqtt()
+        self.ordenador.connect_mqtt()
         print("Escuchando...")
         
         time.sleep(1)
+
+    def main(self):
+
+        self.ordenador.send_node_info(BROADCAST_NUM, want_response=False)
+        time.sleep(4)
+        #self.ordenador.send_message(BROADCAST_NUM)
         
-        try:
-            ordenador.send_node_info(BROADCAST_NUM, want_response=False)
-            time.sleep(4)
-            ordenador.send_message(BROADCAST_NUM)
-            while True:
-                #clearConsole()
-                print("Menu:")
-                print("1. Enviar mensaje.")
-                print("2. Enviar posición.")
-                print("3. Enviar info de nodos.")
-                print("4. Escuchar sensores.")
-                print("5. Clear console.")
-                print("6. Desconectar.")
-                opcion = input("Selccione una opción: ")
-                if opcion == "1":
-                    mensaje = input("Escriba el mensaje a enviar: ")
-                    ordenador.message_text = mensaje
-                    ordenador.send_message(BROADCAST_NUM)
-                elif opcion == "2":
-                    lat = input("Latitud (0 para no cambiarlo): ")
-                    lon = input("Longitud (0 para no cambiarlo): ")
-                    alt = input("Altitud (0 para no cambiarlo): ")
-                    if lat != "0":
-                        ordenador.lat = lat
-                    if lon != "0":
-                        ordenador.lon = lon
-                    if alt != "0":
-                        ordenador.alt = alt
-                    ordenador.send_position(BROADCAST_NUM)
-                elif opcion == "3":
-                    ordenador.send_node_info(BROADCAST_NUM, want_response=False)
-                elif opcion == "4":
-                    client.connect(self.BROKERsensores, self.mqtt_port, 60)
-                    print("Esperando mensajes... Presiona Ctrl+C para salir")
-                    try:
-                        client.loop_forever()  # Mantener el cliente en ejecución
-                    except KeyboardInterrupt:
-                        print("Desconectando del broker...")
-                        client.disconnect()
-                elif opcion == "5":
-                    clearConsole()
-                    print("Consola limpiada.")
-                elif opcion == "6":
-                    print("Desconectando...")
-                    ordenador.disconnect_mqtt()
-                    break
-                else:
-                    print("Opción no válida.")
-        except KeyboardInterrupt:
-            print("Desconectando...")
-            ordenador.disconnect_mqtt()
+        while True:
+            print("\n")
+            print("Menu:")
+            print("1. Enviar mensaje.")
+            print("2. Enviar mensaje directo")
+            print("3. Enviar posición.")
+            print("4. Enviar info de nodos.")
+            print("5. Escuchar sensores.")
+            print("6. Clear console.")
+            print("7. Desconectar.")
+            opcion = input("Selccione una opción: ")
+
+            if opcion == "1":
+                mensaje = input("Escriba el mensaje a enviar: ")
+                self.ordenador.message_text = mensaje
+                self.ordenador.send_message(BROADCAST_NUM, False)
+
+            elif opcion == "2":
+                mensaje = input("Escriba el mensaje a enviar: ")
+                self.ordenador.message_text = mensaje
+                self.ordenador.send_message(BROADCAST_NUM, True)
+
+            elif opcion == "3":
+                lat = input("Latitud (0 para no cambiarlo): ")
+                lon = input("Longitud (0 para no cambiarlo): ")
+                alt = input("Altitud (0 para no cambiarlo): ")
+                if lat != "0":
+                    self.ordenador.lat = lat
+                if lon != "0":
+                    self.ordenador.lon = lon
+                if alt != "0":
+                    self.ordenador.alt = alt
+                self.ordenador.send_position(BROADCAST_NUM)
+
+            elif opcion == "4":
+                self.ordenador.send_node_info(BROADCAST_NUM, want_response=False)
+
+            elif opcion == "5":
+                self.client.connect(self.BROKERsensores, self.mqtt_port, 60)
+                print("Esperando mensajes... Presiona Ctrl+C para salir")
+                try:
+                    self.client.loop_forever()  # Mantener el cliente en ejecución
+                except KeyboardInterrupt:
+                    print("Desconectando del broker...")
+                    self.client.disconnect()
+
+            elif opcion == "6":
+                Dispositivo.clearConsole()
+                print("Consola limpiada.")
+
+            elif opcion == "7":
+                Dispositivo.clearConsole()
+                print("Desconectando...")
+                self.ordenador.disconnect_mqtt()
+                break
+            else:
+                Dispositivo.clearConsole()
+                print("Opción no válida.")

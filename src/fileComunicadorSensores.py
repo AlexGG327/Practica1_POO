@@ -1,20 +1,19 @@
 import json
 import paho.mqtt.client as mqtt
 
-from fileRefresh import clearConsole
-from fileDispositivo import Dispositivo
+from src.fileDispositivo import Dispositivo
 
-nombreArchivo = "DatosSensores.json"
+
 
 # Configuración del cliente MQTT
   # Temas a los que se suscribirá el cliente
 
 class ComunicadorSensores:
-    def __init__(self, broker, port, topics):
+    def __init__(self):
+        self.nombreArchivo = "data/DatosSensores.json"
+
         with open("static/config.json", "r", encoding="utf-8") as archivo:
             config = json.load(archivo)
-        self.broker = config["BROKERsensores"]
-        self.port = config["mqtt_port"]
         self.topics = config["TOPICSsensores"]
         
     # Callback cuando se establece la conexión con el broker
@@ -30,7 +29,7 @@ class ComunicadorSensores:
 
     # Callback cuando se recibe un mensaje en los temas suscritos
     def on_message(self, client, userdata, msg):
-        clearConsole()
+        Dispositivo.clearConsole()
         print("Ctrl+C para salir")
         print(f"Mensaje recibido en el tema '{msg.topic}':")
         print(msg.payload.decode("utf-8"))
@@ -40,7 +39,7 @@ class ComunicadorSensores:
             payload = json.loads(msg.payload.decode("utf-8"))
             print(json.dumps(payload, indent=4))  # Mostrar el mensaje formateado
 
-            guardarDatosSensores(payload, nombreArchivo)
+            Dispositivo.guardarDatos(payload, self.nombreArchivo)
             #print(f"Datos guardados en {nombreArchivo}")
 
         except json.JSONDecodeError as e:
