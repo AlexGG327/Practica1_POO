@@ -1,8 +1,8 @@
-## Práctica 1 Programación por Objetos
+# Práctica 1 Programación por Objetos
 
 Sistema de comunicación por protocolo MQTT y Meshtastic y gestión de datos de sensores a través de MQTT, en python.
 
-Descripción
+## Descripción
 
 Esta aplicación permite comunicarse con otros dispositivos, enviar y recibir posiciones en coordenadas, enviar mensajes
 directos a contactos guardados anteriormente a través de la red Meshtastic.
@@ -17,7 +17,7 @@ Se compone de distintas clases encargadas de:
   Recoger y almacenar datos de sensores por MQTT (ComunicadorSensores)
   Interactuar con la aplicación a través del terminal (InterfazTerminal)
 
-Estructura del proyecto
+## Estructura del proyecto
 
 ├── main.py
 ├── requirements.txt
@@ -36,22 +36,22 @@ Estructura del proyecto
 ├── mensaje_texto_recibido.json
 └── mensaje_telemetria_recibido.json
 
-Ejecución
+## Ejecución
 
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 
-Ejecución
+## Ejecución
 
 python main.py
 
-Configuración
+## Configuración
 
 Para configurar cambiar datos en el archivo static/config.json
 
 
-Requisitos
+## Requisitos
 
 paho-mqtt
 meshtastic
