@@ -38,13 +38,17 @@ Se compone de distintas clases encargadas de:
 
 ## Ejecución
 
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
+```sh
+$ python -m venv venv
+$ source venv/bin/activate
+$ pip install -r requirements.txt
+```
 
 ## Ejecución
 
-python main.py
+```sh
+$ python main.py
+```
 
 ## Configuración
 
