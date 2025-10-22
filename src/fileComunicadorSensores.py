@@ -1,12 +1,5 @@
 import json
-import paho.mqtt.client as mqtt
-
 from src.fileDispositivo import Dispositivo
-
-
-
-# Configuración del cliente MQTT
-  # Temas a los que se suscribirá el cliente
 
 class ComunicadorSensores:
     def __init__(self):
@@ -40,7 +33,6 @@ class ComunicadorSensores:
             print(json.dumps(payload, indent=4))  # Mostrar el mensaje formateado
 
             Dispositivo.guardarDatos(payload, self.nombreArchivo)
-            #print(f"Datos guardados en {nombreArchivo}")
 
         except json.JSONDecodeError as e:
             print(f"Error decodificando JSON: {e}")

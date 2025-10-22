@@ -1,13 +1,6 @@
-from meshtastic.protobuf import mesh_pb2, mqtt_pb2, portnums_pb2
-from meshtastic import BROADCAST_NUM, protocols
+from meshtastic import BROADCAST_NUM
 import paho.mqtt.client as mqtt
-import random
 import time
-import ssl
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.backends import default_backend
-import base64
-import re
 import json
 
 from src.fileComunicador import Comunicador
@@ -42,8 +35,9 @@ class InterfazTerminal:
 
         self.ordenador.send_node_info(BROADCAST_NUM, want_response=False)
         time.sleep(4)
-        #self.ordenador.send_message(BROADCAST_NUM)
-        
+        #self.ordenador.send_message(BROADCAST_NUM, False)
+        time.sleep(2)
+
         while True:
             print("\n")
             print("Menu:")

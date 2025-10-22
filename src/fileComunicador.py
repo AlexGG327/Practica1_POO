@@ -1,5 +1,5 @@
 from meshtastic.protobuf import mesh_pb2, mqtt_pb2, portnums_pb2
-from meshtastic import BROADCAST_NUM, protocols
+from meshtastic import protocols
 import paho.mqtt.client as mqtt
 import random
 import time

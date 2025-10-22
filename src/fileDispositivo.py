@@ -1,13 +1,3 @@
-from meshtastic.protobuf import mesh_pb2, mqtt_pb2, portnums_pb2
-from meshtastic import BROADCAST_NUM, protocols
-import paho.mqtt.client as mqtt
-import random
-import time
-import ssl
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-from cryptography.hazmat.backends import default_backend
-import base64
-import re
 import json
 import os
 
@@ -89,4 +79,4 @@ class Dispositivo:
         except (FileNotFoundError, json.JSONDecodeError):
             pass
 
-        return "!" + hex(numero_nodo)[2:]
+        return numero_nodo
