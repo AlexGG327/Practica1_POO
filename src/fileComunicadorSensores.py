@@ -1,9 +1,10 @@
 import json
 from src.fileDispositivo import Dispositivo
+from src.fileAbastract import AbstractComunicador
 
-class ComunicadorSensores:
+class ComunicadorSensores(AbstractComunicador):
     def __init__(self):
-        self.nombreArchivo = "data/DatosSensores.json"
+        self.nombre_archivo = "data/DatosSensores.json"
 
         with open("static/config.json", "r", encoding="utf-8") as archivo:
             config = json.load(archivo)
@@ -32,7 +33,7 @@ class ComunicadorSensores:
             payload = json.loads(msg.payload.decode("utf-8"))
             print(json.dumps(payload, indent=4))  # Mostrar el mensaje formateado
 
-            Dispositivo.guardarDatos(payload, self.nombreArchivo)
+            Dispositivo.guardarDatos(payload, self.nombre_archivo)
 
         except json.JSONDecodeError as e:
             print(f"Error decodificando JSON: {e}")

@@ -11,12 +11,13 @@ import re
 import json
 
 from src.fileDispositivo import Dispositivo
+from src.fileAbastract import AbstractComunicador, RecibirMensaajesGenerico
 
 def num_to_id(num):
     """Convierte un número de nodo Meshtastic a su representación tipo !abcd1234"""
     return f"!{num:08x}"
 
-class Comunicador:
+class Comunicador(AbstractComunicador, RecibirMensaajesGenerico):
     def __init__(self):
         with open("static/config.json", "r", encoding="utf-8") as archivo:
             config = json.load(archivo)
