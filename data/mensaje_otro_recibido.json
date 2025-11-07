@@ -22,5 +22,7 @@
     "error_reason: NO_RESPONSE",
     "time: 1762163620 device_metrics {   battery_level: 97   voltage: 4.156   channel_utilization: 5.13333321   air_util_tx: 2.57849979   uptime_seconds: 2155039 }",
     "error_reason: NO_RESPONSE",
-    "time: 1762166140 device_metrics {   battery_level: 98   voltage: 4.17   channel_utilization: 5.13333321   air_util_tx: 1.323   uptime_seconds: 2157559 }"
+    "time: 1762166140 device_metrics {   battery_level: 98   voltage: 4.17   channel_utilization: 5.13333321   air_util_tx: 1.323   uptime_seconds: 2157559 }",
+    "error_reason: NO_RESPONSE",
+    "time: 1762512044 device_metrics {   battery_level: 95   voltage: 4.129   channel_utilization: 6.26833344   air_util_tx: 1.5781945   uptime_seconds: 2503463 }"
 ]

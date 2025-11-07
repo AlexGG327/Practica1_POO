@@ -54,6 +54,8 @@ class Comunicador(AbstractComunicador, RecibirMensaajesGenerico):
         self.client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_id="", clean_session=True, userdata=None)
         self.dispositivo = Dispositivo(self.root_topic, self.channel, self.debug)
 
+        self.lista_mensajes_grafica = []
+
     # Conectar al servidor MQTT
 
     def connect_mqtt(self):
@@ -301,6 +303,7 @@ class Comunicador(AbstractComunicador, RecibirMensaajesGenerico):
             print("Mensaje: ", mp.decoded.payload.decode("utf-8"))
             print("\n")
             # Mesaje de texto
+            self.lista_mensajes_grafica.append(f"Mensaje recibido de: {contacto}\nMensaje: {mp.decoded.payload.decode('utf-8')}\n\n")
             nombreArchivo = "data/mensaje_texto_recibido.json"
             self.dispositivo.guardarDatos(mp.decoded.payload.decode("utf-8"), nombreArchivo)
         
