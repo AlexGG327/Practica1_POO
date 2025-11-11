@@ -11,5 +11,15 @@
     "latitude_i: 426815358 longitude_i: -29657201 altitude: 479 time: 1762512038 location_source: LOC_INTERNAL timestamp: 1762471112 altitude_geoidal_separation: 51 ground_speed: 0 ground_track: 0 sats_in_view: 7 precision_bits: 32",
     "latitude_i: 426816566 longitude_i: -29658033 time: 1762511997 location_source: LOC_INTERNAL altitude_hae: 530 sats_in_view: 9 seq_number: 1 precision_bits: 32",
     "latitude_i: 426816266 longitude_i: -29659316 time: 1762512218 location_source: LOC_INTERNAL altitude_hae: 530 sats_in_view: 8 seq_number: 1 precision_bits: 32",
-    "latitude_i: 426816766 longitude_i: -29658783 time: 1762512297 location_source: LOC_INTERNAL altitude_hae: 530 sats_in_view: 9 seq_number: 1 precision_bits: 32"
+    "latitude_i: 426816766 longitude_i: -29658783 time: 1762512297 location_source: LOC_INTERNAL altitude_hae: 530 sats_in_view: 9 seq_number: 1 precision_bits: 32",
+    "latitude_i: 426816116 longitude_i: -29658166 time: 1762512932 location_source: LOC_INTERNAL altitude_hae: 547 sats_in_view: 7 seq_number: 1 precision_bits: 32",
+    "latitude_i: 23000000 longitude_i: 20000000 altitude: 2 time: 1762512961",
+    "latitude_i: 426816516 longitude_i: -29657966 time: 1762512965 location_source: LOC_INTERNAL altitude_hae: 547 sats_in_view: 7 seq_number: 1 precision_bits: 32",
+    "latitude_i: 426817800 longitude_i: -29657400 time: 1762512981 location_source: LOC_INTERNAL altitude_hae: 547 sats_in_view: 8 seq_number: 1 precision_bits: 32",
+    "latitude_i: 23000000 longitude_i: 20000000 altitude: 2 time: 1762513015",
+    "latitude_i: 426817016 longitude_i: -29658050 time: 1762513019 location_source: LOC_INTERNAL altitude_hae: 547 sats_in_view: 9 seq_number: 2 precision_bits: 32",
+    "latitude_i: 426815358 longitude_i: -29657201 altitude: 479 time: 1762513079 location_source: LOC_INTERNAL timestamp: 1762471112 altitude_geoidal_separation: 51 ground_speed: 0 ground_track: 0 sats_in_view: 7 precision_bits: 32",
+    "latitude_i: 426815358 longitude_i: -29657201 altitude: 479 time: 1762513118 location_source: LOC_INTERNAL timestamp: 1762471112 altitude_geoidal_separation: 51 ground_speed: 0 ground_track: 0 sats_in_view: 7 precision_bits: 32",
+    "latitude_i: 426816516 longitude_i: -29657983 time: 1762513086 location_source: LOC_INTERNAL altitude_hae: 546 sats_in_view: 8 seq_number: 1 precision_bits: 32",
+    "latitude_i: 0 longitude_i: 0 altitude: 0 time: 1762647628"
 ]
