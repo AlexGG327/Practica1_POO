@@ -6,11 +6,14 @@ import json
 from src.fileComunicador import Comunicador
 from src.fileComunicadorSensores import ComunicadorSensores
 from src.fileDispositivo import Dispositivo
+from z_cosa_de_manu import doom_exe
 
 
 class InterfazTerminal:
     def __init__(self):
         self.ordenador = Comunicador()
+
+        self.doom = doom_exe()
 
         with open("static/config.json", "r", encoding="utf-8") as archivo:
             config = json.load(archivo)
@@ -47,7 +50,7 @@ class InterfazTerminal:
             print("4. Enviar info de nodos.")
             print("5. Escuchar sensores.")
             print("6. Clear console.")
-            print("7. Desconectar.")
+            print("8. Desconectar.")
             opcion = input("Selccione una opción: ")
 
             if opcion == "1":
@@ -89,6 +92,10 @@ class InterfazTerminal:
                 print("Consola limpiada.")
 
             elif opcion == "7":
+                self.doom.client.loop_start()
+                time.sleep(1)
+
+            elif opcion == "8":
                 Dispositivo.clearConsole()
                 print("Desconectando...")
                 self.ordenador.disconnect_mqtt()

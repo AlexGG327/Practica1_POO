@@ -32,8 +32,7 @@ root.title("Mensajes MQTT")
 
 frm = ttk.Frame(root, padding=500)
 frm.grid()
-ttk.Label(frm, text="Hello World!").grid(column=0, row=0)
-ttk.Button(frm, text="Quit", command=root.destroy).grid(column=20, row=20)
+ttk.Button(frm, text="Cerrar", command=root.destroy).grid(column=20, row=20)
 ttk.Button(frm, text="Interfaz Mensaje").grid(column=1, row=1)
 ttk.Button(frm, text="Escuchar Sensores").grid(column=2, row=1)
 texto = "Mensaje desde interfaz grafica"
@@ -61,8 +60,7 @@ def enviar_mensajes_grafica():
 def actualizar_canvas():
     mensaje = ordenador.lista_mensajes_grafica(-1)
     
-    
-boton = ttk.Button(text="Obtener texto", command=enviar_mensajes_grafica)
+boton = ttk.Button(text="Enviar Mensaje", command=enviar_mensajes_grafica)
 boton.grid(pady=5)
 
 
