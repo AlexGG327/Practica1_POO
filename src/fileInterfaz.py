@@ -2,6 +2,7 @@ from meshtastic import BROADCAST_NUM
 import paho.mqtt.client as mqtt
 import time
 import json
+import threading
 
 from src.fileComunicador import Comunicador
 from src.fileComunicadorSensores import ComunicadorSensores
@@ -50,6 +51,7 @@ class InterfazTerminal:
             print("4. Enviar info de nodos.")
             print("5. Escuchar sensores.")
             print("6. Clear console.")
+            print("7. Jugar DOOM.")
             print("8. Desconectar.")
             opcion = input("Selccione una opción: ")
 
@@ -92,8 +94,11 @@ class InterfazTerminal:
                 print("Consola limpiada.")
 
             elif opcion == "7":
+                self.doom.client.connect(self.doom.broker, 1883, 60)
                 self.doom.client.loop_start()
-                time.sleep(1)
+                hilo = threading.Thread(target=self.doom.detectar_imputs) 
+                hilo.daemon = True
+                hilo.start()
 
             elif opcion == "8":
                 Dispositivo.clearConsole()
