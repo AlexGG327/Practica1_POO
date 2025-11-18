@@ -1,15 +1,24 @@
+import paho.mqtt.client as mqtt
 import json
-#from src.fileDispositivo import Dispositivo
-from src.fileAbastract import AbstractComunicador
 
-class ComunicadorSensores(AbstractComunicador):
+class ComunicadorSensores():
     def __init__(self, gui_callback=None):
         self.gui_callback = gui_callback
-        self.nombre_archivo = "data/DatosSensores.json"
 
         with open("static/config.json", "r", encoding="utf-8") as archivo:
             config = json.load(archivo)
+
         self.topics = config["TOPICSsensores"]
+        self.broker = config["BROKERsensores"]
+        self.port = config["mqtt_port"]
+
+        self.client = mqtt.Client()
+        self.client.on_connect = self.on_connect
+        self.client.on_message = self.on_message
+    
+    def iniciar_sensores(self):
+        self.client.connect(self.broker, self.port, 60)
+        self.client.loop_start()
         
     # Callback cuando se establece la conexión con el broker
     def on_connect(self, client, userdata, flags, rc):

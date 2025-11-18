@@ -16,7 +16,7 @@ class doom_exe:
         self.client = mqtt.Client()
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
-        self.client.connect(self.broker, 1883, 60)
+        
 
     # mensajes doom
     def on_connect(self, client, userdata, flags, rc):

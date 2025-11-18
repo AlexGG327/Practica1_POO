@@ -19,6 +19,8 @@ def num_to_id(num):
 
 class Comunicador(AbstractComunicador, RecibirMensaajesGenerico):
     def __init__(self):
+        self.callback_mensaje_recibido = None
+
         with open("static/config.json", "r", encoding="utf-8") as archivo:
             config = json.load(archivo)
         
@@ -299,6 +301,9 @@ class Comunicador(AbstractComunicador, RecibirMensaajesGenerico):
         contacto = Dispositivo.queContactoEs(from_node, "data/contactos.json")
 
         if mp.decoded.portnum == 1:
+            if self.callback_mensaje_recibido is not None:
+                mensaje = f"[{contacto}] {mp.decoded.payload.decode('utf-8')}"
+                self.callback_mensaje_recibido(mensaje)
             print("Mensaje recibido de:", contacto)
             print("Mensaje: ", mp.decoded.payload.decode("utf-8"))
             print("\n")

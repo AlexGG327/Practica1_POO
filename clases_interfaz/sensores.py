@@ -1,5 +1,9 @@
 import tkinter as tk
 from tkinter import ttk, scrolledtext
+import paho.mqtt.client as mqtt
+import json
+
+from zzz_pruebas.DEF_sensores import ComunicadorSensores
 
 # ===========================================================
 #   FRAME PARA SENSORES
@@ -14,12 +18,8 @@ class SensoresFrame(ttk.Frame):
         self.log = scrolledtext.ScrolledText(self, width=60, height=15, state="disabled")
         self.log.pack(pady=10)
 
-        ttk.Button(self, text="Inciar escucha").pack(pady=10)
-
     def mostrar_mensaje(self, texto):
         self.log.config(state="normal")
         self.log.insert("end", texto + "\n")
         self.log.see("end")
         self.log.config(state="disabled")
-        
-        ttk.Label(self, text="Aquí se mostrarán los datos de sensores.").pack(pady=20)
