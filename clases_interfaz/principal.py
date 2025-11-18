@@ -25,7 +25,7 @@ class MainApp:
         #PARA INTERFAZ
         self.root = tk.Tk()
         self.root.title("MQTT / Mensajes")
-        self.root.geometry("650x500")
+        self.root.geometry("800x650")
 
         # Frames
         self.frame_mensajes = MensajesFrame(self.root, enviar_callback=self.enviar_mensaje)
@@ -53,14 +53,6 @@ class MainApp:
         self.ordenador.message_text = self.frame_mensajes.entry.get()
         print("El texto ingresado es:", self.ordenador.message_text)
         self.ordenador.send_message(BROADCAST_NUM, False)
-        #canvas.insert(tk.END, "Hola mundo\n")
-        
-        #Aquí conectas TU lógica real:
-        #ordenador.message_text = texto
-        #ordenador.send_message(...)
-        
-        print("Mensaje enviado:", texto)
-        self.frame_mensajes.mostrar_mensaje("[TÚ] " + texto)
     
     def run(self):
         self.root.mainloop()
