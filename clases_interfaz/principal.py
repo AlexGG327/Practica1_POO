@@ -11,7 +11,7 @@ from src.fileComunicador import Comunicador
 
 class MainApp:
     def __init__(self):
-        #NORMAL
+        #Normal
         self.ordenador = Comunicador()
         
         self.ordenador.client.on_connect = self.ordenador.on_connect
@@ -23,16 +23,15 @@ class MainApp:
         self.ordenador.connect_mqtt()
         print("Escuchando...")
 
-        #PARA INTERFAZ
         self.root = tk.Tk()
         self.root.title("Meshtastic")
         self.root.geometry("800x650")
 
-        # Frames
+        #Crear frames
         self.frame_mensajes = MensajesFrame(self.root, enviar_callback=self.enviar_mensaje)
         self.frame_mapa = MapaFrame(self.root)
 
-        # Menú/botones para cambiar de vista
+        #Botones para cambiar de frame
         top_frame = ttk.Frame(self.root)
         top_frame.grid(row=0, column=0, pady=10)
 
@@ -40,8 +39,8 @@ class MainApp:
         ttk.Button(top_frame, text="Mapa", command=self.mostrar_mapa).grid(row=0, column=1, padx=5)
         ttk.Button(top_frame, text="Salir", command=self.root.destroy).grid(row=0, column=2, padx=5)
 
-        # Mostrar vista inicial
-        #self.mostrar_mensaje()
+        # Mostrar mensajes al iniciar
+        self.mostrar_mensaje()
 
     #CAMBIO DE FRAME
 
@@ -49,7 +48,8 @@ class MainApp:
         self.root.after(0, lambda: self.frame_mensajes.mostrar_mensaje(texto))
 
     def mostrar_mensaje(self):
-        self.frame_mensajes.pack(fill="both", expand=True)
+        self.frame_mapa.grid_forget()
+        self.frame_mensajes.grid(row=1, column=0, sticky="nsew")
 
     def enviar_mensaje(self, texto):
         self.ordenador.message_text = self.frame_mensajes.entry.get()
@@ -57,7 +57,8 @@ class MainApp:
         self.ordenador.send_message(BROADCAST_NUM, False)
 
     def mostrar_mapa(self):
-        self.frame_mapa.pack(fill="both", expand=True)
+        self.frame_mensajes.grid_forget()
+        self.frame_mapa.grid(row=1, column=0, sticky="nsew")
     
     def run(self):
         self.root.mainloop()

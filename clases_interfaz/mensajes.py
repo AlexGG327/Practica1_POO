@@ -7,23 +7,21 @@ from tkinter import ttk, scrolledtext
 
 class MensajesFrame(ttk.Frame):
     def __init__(self, parent, enviar_callback):
-        """
-        enviar_callback: función que MainApp llama para enviar mensajes al Comunicador.
-        """
         super().__init__(parent, padding=20)
-
+        
+        #enviar_callback: función que MainApp llama para enviar mensajes al Comunicador.
         self.enviar_callback = enviar_callback
 
         # --- Título ---
-        ttk.Label(self, text="Mensajes", font=("Segoe UI", 16, "bold")).pack(pady=10)
+        ttk.Label(self, text="Mensajes", font=("Segoe UI", 16, "bold")).grid(row=0, column=0, columnspan=2, pady=10)
 
-        # --- Log de mensajes ---
+        #Mensajes recibidos
         self.log = scrolledtext.ScrolledText(self, width=60, height=15, state="disabled")
-        self.log.pack(pady=10)
+        self.log.grid(row=1, column=0, columnspan=2, pady=10)
 
-        # --- Entrada + botón ---
+        #Entrada y boton
         entry_frame = ttk.Frame(self)
-        entry_frame.pack(pady=10)
+        entry_frame.grid(row=2, column=0, columnspan=2, pady=10)
 
         self.entry = ttk.Entry(entry_frame, width=40)
         self.entry.grid(row=0, column=0, padx=5)
