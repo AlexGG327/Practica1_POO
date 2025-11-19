@@ -5,6 +5,7 @@ import paho.mqtt.client as mqtt
 from meshtastic import BROADCAST_NUM
 
 from clases_interfaz.mensajes import MensajesFrame
+from clases_interfaz.mapa import MapaFrame
 
 from src.fileComunicador import Comunicador
 
@@ -24,22 +25,23 @@ class MainApp:
 
         #PARA INTERFAZ
         self.root = tk.Tk()
-        self.root.title("MQTT / Mensajes")
+        self.root.title("Meshtastic")
         self.root.geometry("800x650")
 
         # Frames
         self.frame_mensajes = MensajesFrame(self.root, enviar_callback=self.enviar_mensaje)
+        self.frame_mapa = MapaFrame(self.root)
 
         # Menú/botones para cambiar de vista
         top_frame = ttk.Frame(self.root)
-        top_frame.pack(pady=10)
+        top_frame.grid(row=0, column=0, pady=10)
 
         ttk.Button(top_frame, text="Mensajes", command=self.mostrar_mensaje).grid(row=0, column=0, padx=5)
-
+        ttk.Button(top_frame, text="Mapa", command=self.mostrar_mapa).grid(row=0, column=1, padx=5)
         ttk.Button(top_frame, text="Salir", command=self.root.destroy).grid(row=0, column=2, padx=5)
 
         # Mostrar vista inicial
-        self.mostrar_mensaje()
+        #self.mostrar_mensaje()
 
     #CAMBIO DE FRAME
 
@@ -53,6 +55,9 @@ class MainApp:
         self.ordenador.message_text = self.frame_mensajes.entry.get()
         print("El texto ingresado es:", self.ordenador.message_text)
         self.ordenador.send_message(BROADCAST_NUM, False)
+
+    def mostrar_mapa(self):
+        self.frame_mapa.pack(fill="both", expand=True)
     
     def run(self):
         self.root.mainloop()
