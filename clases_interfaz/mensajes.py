@@ -1,10 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, scrolledtext
 
-# ===========================================================
-#   FRAME PARA MENSAJES
-# ===========================================================
-
 class MensajesFrame(ttk.Frame):
     def __init__(self, parent, enviar_callback):
         super().__init__(parent, padding=20)
