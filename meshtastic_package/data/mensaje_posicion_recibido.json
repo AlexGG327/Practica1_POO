@@ -1,0 +1,14 @@
+[
+    "latitude_i: 426815587 longitude_i: -29657658 altitude: 469 time: 1763715362 location_source: LOC_EXTERNAL ground_speed: 0 ground_track: 0 precision_bits: 32",
+    "latitude_i: 426815583 longitude_i: -29657098 altitude: 477 time: 1763715365 location_source: LOC_INTERNAL timestamp: 1763680712 altitude_geoidal_separation: 51 ground_speed: 0 ground_track: 0 sats_in_view: 7 precision_bits: 32",
+    "latitude_i: 426815587 longitude_i: -29657658 altitude: 469 time: 1763716717 location_source: LOC_EXTERNAL ground_speed: 0 ground_track: 0 precision_bits: 32",
+    "latitude_i: 426815587 longitude_i: -29657658 altitude: 469 time: 1763717799 location_source: LOC_EXTERNAL ground_speed: 0 ground_track: 0 precision_bits: 32",
+    "latitude_i: 426860000 longitude_i: -29490000 altitude: 471 time: 1763717805",
+    "latitude_i: 426815583 longitude_i: -29657098 altitude: 477 time: 1763717805 location_source: LOC_INTERNAL timestamp: 1763680712 altitude_geoidal_separation: 51 ground_speed: 0 ground_track: 0 sats_in_view: 7 precision_bits: 32",
+    "latitude_i: 426815583 longitude_i: -29657098 altitude: 477 time: 1763721091 location_source: LOC_INTERNAL timestamp: 1763680712 altitude_geoidal_separation: 51 ground_speed: 0 ground_track: 0 sats_in_view: 7 precision_bits: 32",
+    "latitude_i: 426815587 longitude_i: -29657658 altitude: 469 time: 1763974702 location_source: LOC_EXTERNAL ground_speed: 0 ground_track: 0 precision_bits: 32",
+    "latitude_i: 426816816 longitude_i: -29657833 time: 1763974722 location_source: LOC_INTERNAL altitude_hae: 527 sats_in_view: 8 seq_number: 1 precision_bits: 32",
+    "latitude_i: 426815366 longitude_i: -29657033 time: 1763974794 location_source: LOC_INTERNAL altitude_hae: 527 sats_in_view: 8 seq_number: 1 precision_bits: 32",
+    "latitude_i: 0 longitude_i: 0 altitude: 0 time: 1763974818",
+    "latitude_i: 426815950 longitude_i: -29658200 time: 1763973799 location_source: LOC_INTERNAL altitude_hae: 526 sats_in_view: 7 seq_number: 1 precision_bits: 32"
+]
