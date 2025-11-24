@@ -10,18 +10,26 @@ import base64
 import re
 import json
 
-from src.fileDispositivo import Dispositivo
-from src.fileAbastract import AbstractComunicador, RecibirMensaajesGenerico
+from ament_index_python.packages import get_package_share_directory
+import os
+
+
+from meshtastic_package.fileDispositivo import Dispositivo
 
 def num_to_id(num):
     """Convierte un número de nodo Meshtastic a su representación tipo !abcd1234"""
     return f"!{num:08x}"
 
-class Comunicador(AbstractComunicador, RecibirMensaajesGenerico):
+class Comunicador():
     def __init__(self):
+        config_path = os.path.join(
+            get_package_share_directory('meshtastic_package'),
+            'static',
+            'config.json'
+        )
         self.callback_mensaje_recibido = None
 
-        with open("static/config.json", "r", encoding="utf-8") as archivo:
+        with open(config_path, "r", encoding="utf-8") as archivo:
             config = json.load(archivo)
         
         self.debug = config["debug"]
