@@ -16,18 +16,24 @@ class RobotFrame(ttk.Frame):
         #Titulo
         ttk.Label(self, text="Robot", font=("Segoe UI", 16, "bold")).grid(row=0, column=0, columnspan=2, pady=10)
 
+        self.hilo_undock = threading.Thread(target=self.undock, daemon=True)
+        self.hilo_dock = threading.Thread(target=self.dock, daemon=True)
+
         entry_frame = ttk.Frame(self)
         entry_frame.grid(row=2, column=0, columnspan=2, pady=10)
 
         ttk.Button(entry_frame, text="Undock", command=self.undock).grid(row=1, column=1)
         ttk.Button(entry_frame, text="Dock", command=self.dock).grid(row=1, column=2)
         ttk.Button(entry_frame, text="Iniciar Turtlebot4", command=self.iniciar_turtlebot).grid(row=1, column=3)
+        ttk.Button(entry_frame, text="Moverse", command=self.moverse).grid(row=1, column=4)
 
     def threaded_undock(self):
-        threading.Thread(target=self.undock).start()
+        self.hilo_undock.start()
+        self.hilo_undock.join()
 
     def threaded_dock(self):
-        threading.Thread(target=self.dock).start()
+        self.hilo_dock.start()
+        self.hilo_dock.join()
 
     def threaded_iniciar_turtlebot(self):
         threading.Thread(target=self.iniciar_turtlebot).start()
@@ -56,18 +62,40 @@ class RobotFrame(ttk.Frame):
 
         print("Turtlebot4 iniciado.")
 
-        """
+        # Wait for Nav2
+        self.navigator.waitUntilNav2Active()
+
+    def moverse(self):
+        # Set goal poses
+        goal_pose = self.navigator.getPoseStamped([-13.0, 9.0], TurtleBot4Directions.EAST)
+
+        # Undock
+        self.navigator.undock()
+
+        # Go to each goal pose
+        self.navigator.startToPose(goal_pose)
+
+        #rclpy.shutdown()
+
+    @staticmethod
+    def mover_robot_meshtastic():
+        navigator = TurtleBot4Navigator()
+
+        if not navigator.getDockedStatus():
+            navigator.info('Docking')
+            navigator.dock()
+
+        # Set initial pose
+        initial_pose = navigator.getPoseStamped([0.0, 0.0], TurtleBot4Directions.NORTH)
+        navigator.setInitialPose(initial_pose)
+
+        print("Turtlebot4 iniciado.")
+
         # Wait for Nav2
         navigator.waitUntilNav2Active()
 
-        # Set goal poses
         goal_pose = navigator.getPoseStamped([-13.0, 9.0], TurtleBot4Directions.EAST)
 
-        # Undock
         navigator.undock()
 
-        # Go to each goal pose
         navigator.startToPose(goal_pose)
-
-        rclpy.shutdown()
-        """

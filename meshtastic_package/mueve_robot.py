@@ -21,7 +21,7 @@ def mueve_turtlebot():
     navigator.waitUntilNav2Active()
 
     # Set goal poses
-    goal_pose = navigator.getPoseStamped([-13.0, 9.0], TurtleBot4Directions.EAST)
+    goal_pose = navigator.getPoseStamped([-0.5, 0.0], TurtleBot4Directions.EAST)
 
     # Undock
     navigator.undock()

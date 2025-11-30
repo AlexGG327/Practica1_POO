@@ -13,8 +13,8 @@ import json
 from ament_index_python.packages import get_package_share_directory
 import os
 
-
 from meshtastic_package.fileDispositivo import Dispositivo
+from meshtastic_package.robot import RobotFrame
 
 def num_to_id(num):
     """Convierte un número de nodo Meshtastic a su representación tipo !abcd1234"""
@@ -304,9 +304,11 @@ class Comunicador():
         from_node = getattr(mp, "from")
         contacto = num_to_id(from_node)
 
-        self.dispositivo.guardarContactos(contacto, "data/contactos.json", from_node)
+        patth = "/home/alexg/ros2_jazzy/install/meshtastic_package/share/meshtastic_package/data/"
 
-        contacto = Dispositivo.queContactoEs(from_node, "data/contactos.json")
+        self.dispositivo.guardarContactos(contacto, patth + "contactos.json", from_node)
+
+        contacto = Dispositivo.queContactoEs(from_node, patth +  "contactos.json")
 
         if mp.decoded.portnum == 1:
             if self.callback_mensaje_recibido is not None:
@@ -315,9 +317,12 @@ class Comunicador():
             print("Mensaje recibido de:", contacto)
             print("Mensaje: ", mp.decoded.payload.decode("utf-8"))
             print("\n")
+
+            self.mover_robot(mp.decoded.payload.decode("utf-8"))
+            
             # Mesaje de texto
             self.lista_mensajes_grafica.append(f"Mensaje recibido de: {contacto}\nMensaje: {mp.decoded.payload.decode('utf-8')}\n\n")
-            nombreArchivo = "data/mensaje_texto_recibido.json"
+            nombreArchivo = patth + "mensaje_texto_recibido.json"
             self.dispositivo.guardarDatos(mp.decoded.payload.decode("utf-8"), nombreArchivo)
         
         elif mp.decoded.portnum == 3:
@@ -325,7 +330,7 @@ class Comunicador():
             print("Posicion: ", mp.decoded.payload.decode("utf-8"))
             print("\n")
             # Mesaje de posición GPS
-            nombreArchivo = "data/mensaje_posicion_recibido.json"
+            nombreArchivo = patth + "mensaje_posicion_recibido.json"
             self.dispositivo.guardarDatos(mp.decoded.payload.decode("utf-8"), nombreArchivo)
 
         elif mp.decoded.portnum == 4:
@@ -333,14 +338,14 @@ class Comunicador():
             print("Telemetria: ", mp.decoded.payload.decode("utf-8"))
             print("\n")
             # Mesaje de telemetria
-            nombreArchivo = "data/mensaje_telemetria_recibido.json"
+            nombreArchivo = patth + "mensaje_telemetria_recibido.json"
             self.dispositivo.guardarDatos(mp.decoded.payload.decode("utf-8"), nombreArchivo)
 
         else:
             print("Mensaje de otro tipo recibido de:", contacto)
             print("Mensaje:", mp.decoded.payload.decode("utf-8"))
             print("\n")
-            nombreArchivo = "data/mensaje_otro_recibido.json"
+            nombreArchivo = patth + "mensaje_otro_recibido.json"
             self.dispositivo.guardarDatos(mp.decoded.payload.decode("utf-8"), nombreArchivo)
         
     def decode_encrypted(self, mp):
@@ -360,3 +365,11 @@ class Comunicador():
             if self.print_message_packet: print(f"failed to decrypt: \n{mp}")
             if self.debug: print(f"*** Decryption failed: {str(e)}")
             return
+        
+    def mover_robot(self, mensaje):
+        lista = mensaje.split()
+        #print(lista)
+        if lista[0] == "mover_robot":
+            print("El robot se va a mover")
+
+            RobotFrame.mover_robot_meshtastic()
