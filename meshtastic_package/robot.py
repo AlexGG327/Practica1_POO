@@ -76,7 +76,7 @@ class RobotFrame(ttk.Frame):
         self.navigator.startToPose(goal_pose)
 
         #rclpy.shutdown()
-
+"""
     @staticmethod
     def mover_robot_meshtastic():
         navigator = TurtleBot4Navigator()
@@ -99,3 +99,4 @@ class RobotFrame(ttk.Frame):
         navigator.undock()
 
         navigator.startToPose(goal_pose)
+"""
