@@ -30,4 +30,4 @@ cryptography
 tkintermapview
 
 
-Proyecto relalizado por Alejandro Guadalupe García.
+Proyecto realizado por Alejandro Guadalupe García.
