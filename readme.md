@@ -22,8 +22,12 @@ Para configurar cambiar datos en el archivo config.json
 ## Requisitos
 
 paho-mqtt
+
 meshtastic
+
 cryptography
+
 tkintermapview
+
 
 Proyecto relalizado por Alejandro Guadalupe García.
