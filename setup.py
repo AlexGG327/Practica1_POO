@@ -1,6 +1,8 @@
 from setuptools import find_packages, setup
+from glob import glob
 import os
 
+# Nombre del paquete ROS (el de package.xml)
 package_name = 'meshtastic_package'
 
 setup(
@@ -8,39 +10,35 @@ setup(
     version='0.0.0',
     packages=find_packages(exclude=['test']),
     data_files=[
+        # Índice de ament
         ('share/ament_index/resource_index/packages',
-            ['resource/' + package_name]),
-
+         ['resource/' + package_name]),
+        # package.xml
         ('share/' + package_name, ['package.xml']),
-
-        # Copiar archivo config.json dentro de share/meshtastic_package/static
-        (
-            os.path.join('share', package_name, 'static'),
-            ['meshtastic_package/static/config.json']
-        ),
-
-        # Copiar los archivos JSON de data
-        (
-            os.path.join('share', package_name, 'data'),
-            [
-                'meshtastic_package/data/contactos.json',
-                'meshtastic_package/data/mensaje_posicion_recibido.json',
-                'meshtastic_package/data/mensaje_telemetria_recibido.json',
-                'meshtastic_package/data/mensaje_texto_recibido.json'
-            ]
-        ),
+        # (opcional) ficheros estáticos y de datos, si los usas
+        (os.path.join('share', package_name, 'static'),
+         glob(os.path.join('static', '*'))),
+        (os.path.join('share', package_name, 'data'),
+         glob(os.path.join('data', '*'))),
+    ],
+    install_requires=[
+        'setuptools',
+        'paho-mqtt',
+        'meshtastic',
+        'cryptography',
+        'tkintermapview',
     ],
     zip_safe=True,
-    maintainer='alexg',
-    maintainer_email='alexgg327th@gmail.com',
-    description='Nodo Meshtastic para TurtleBot4',
+    maintainer='jarain78',
+    maintainer_email='jrincon@dsic.upv.es',
+    description='Nodo ROS2 con GUI Tkinter para Meshtastic + Turtlebot4',
     license='Apache-2.0',
-    extras_require={
-        'test': ['pytest'],
-    },
+    tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-            'meshtastic_node = meshtastic_package.meshtastic_node:main'
+            # OJO: aquí va el paquete Python, que es la carpeta meshtastic_package
+            'meshtastic_node = meshtastic_package.meshtastic_node:main',
         ],
     },
 )
+
