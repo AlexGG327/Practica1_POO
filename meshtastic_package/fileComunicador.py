@@ -25,8 +25,11 @@ def num_to_id(num):
     """Convierte un número de nodo Meshtastic a su representación tipo !abcd1234"""
     return f"!{num:08x}"
 
-class ComunicadorAbst(ABC):
+class RobotMixin:
+    def mixin(self, mensaje:str)-> None:
+        print(f"[RobotMixin] Usando comando:'{mensaje}'")
 
+class ComunicadorAbst(ABC):
     @abstractmethod
     def conecta(self):
         pass
@@ -39,11 +42,7 @@ class ComunicadorAbst(ABC):
     def envia_mensaje(self, destino, texto):
         pass
 
-    @abstractmethod
-    def procesa_mensaje(self, mensaje):
-        pass
-
-class Comunicador():
+class Comunicador(ComunicadorAbst, RobotMixin):
     def __init__(self):
         config_path = os.path.join(
             get_package_share_directory('meshtastic_package'),
@@ -90,6 +89,16 @@ class Comunicador():
         self.lista_mensajes_grafica = []
 
     # Conectar al servidor MQTT
+
+    def conecta(self):
+        return self.connect_mqtt()
+
+    def desconecta(self):
+        return self.disconnect_mqtt()
+
+    def envia_mensaje(self, destino, texto):
+        self.message_text = texto
+        self.send_message(destino, False)
 
     def connect_mqtt(self)-> None:
         if "tls_configured" not in self.connect_mqtt.__dict__:          #Persistent variable to remember if we've configured TLS yet
@@ -394,21 +403,26 @@ class Comunicador():
         lista = mensaje.split()
         #print(lista)
         if lista[0] == "mover_robot":
-            print("El robot se va a mover")
-
+            mensaje = "El robot se va a mover"
+            self.mixin(mensaje)
             RobotFrame.mover_robot_meshtastic()
 
         elif lista[0] == "mover_robot_posicion":
-            print("El robot se va a mover")
-
-            RobotFrame.mover_robot_meshtastic_posicion(float(lista[1]), float(lista[2]))
+            mensaje = "El robot se va a mover"
+            self.mixin(mensaje)
+            try:
+                x = float(lista[1])
+                y = float(lista[2])
+            except (ValueError, IndexError) as e:
+                raise ValueError(f"Error: las posiciones recibidas no son válidas: {lista[1:]}. Descripcion: {e}")
+            RobotFrame.mover_robot_meshtastic_posicion(x, y)
 
         elif lista[0] == "dock":
-            print("El robot se va a dockear")
-
+            mensaje = "El robot se va a dockear"
+            self.mixin(mensaje)
             RobotFrame.dock()
 
         elif lista[0] == "undock":
-            print("El robot se va a undockear")
-
+            mensaje = "El robot se va a undockear"
+            self.mixin(mensaje)
             RobotFrame.undock()

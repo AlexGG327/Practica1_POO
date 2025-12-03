@@ -22,17 +22,13 @@ class MainApp(Node):
 
         self.ordenador.callback_mensaje_recibido = self.mostrar_mensaje_recibido
 
-        self.ordenador.connect_mqtt()
+        self.ordenador.conecta()
         self.get_logger().info("Escuchando mensajes Meshtastic/MQTT...")
 
         # ------------ TKINTER GUI ------------
         self.root = tk.Tk()
         self.root.title("Meshtastic")
         self.root.geometry("800x650")
-
-        Label(self.root, text="Hola ROS2 + Tkinter").grid(
-            row=0, column=0, columnspan=4, pady=10
-        )
 
         # Crear frames
         self.frame_mensajes = MensajesFrame(
