@@ -1,42 +1,40 @@
 import threading
 from tkinter import ttk
-from turtlebot4_navigation.turtlebot4_navigator import (
-    TurtleBot4Directions,
-    TurtleBot4Navigator
-)
+from turtlebot4_navigation.turtlebot4_navigator import TurtleBot4Directions, TurtleBot4Navigator
 
-
-class RobotFrame(ttk.Frame):
-    def __init__(self, parent):
-        super().__init__(parent, padding=20)
-
-        # IMPORTANTE:
-        # El navigator debe crearse DESPUÉS de que ROS ya está inicializado.
-        # por eso lo creamos con lazy-init
+class RobotFrame():
+    def __init__(self):
         self.navigator = None
 
-        ttk.Label(self, text="Robot", font=("Segoe UI", 16, "bold")).grid(row=0, column=0, columnspan=4, pady=10)
+        self.posicion_x = 0.0
+        self.posicion_y = 0.0
 
-        ttk.Button(self, text="Undock", command=lambda: self.run(self.undock)).grid(row=1, column=0)
-        ttk.Button(self, text="Dock",   command=lambda: self.run(self.dock)).grid(row=1, column=1)
-        ttk.Button(self, text="Iniciar Turtlebot4", command=lambda: self.run(self.iniciar)).grid(row=1, column=2)
-        ttk.Button(self, text="Moverse", command=lambda: self.run(self.mover)).grid(row=1, column=3)
+    def run(self, fn, x, y):
+        self.posicion_x = x
+        self.posicion_y = y
+        if fn == "undock":
+            threading.Thread(target=self.undock, daemon=True).start()
 
-    def run(self, fn):
-        threading.Thread(target=fn, daemon=True).start()
+        elif fn == "dock":
+            threading.Thread(target=self.dock, daemon=True).start()
 
-    # ------------------------------------------
-    # Lazy init del Navigator
-    # ------------------------------------------
+        elif fn == "iniciar":
+            threading.Thread(target=self.iniciar, daemon=True).start()
+
+        elif fn == "mover":
+            threading.Thread(target=self.mover, daemon=True).start()
+
+        elif fn == "mover_posicion":
+            print(f"Posición objetivo establecida en x: {self.posicion_x}, y: {self.posicion_y}")
+            threading.Thread(target=self.mover_a_posicion, daemon=True).start()
+
+    # Iniciar navigator
     def get_nav(self):
         if self.navigator is None:
             print("Inicializando TurtleBot4Navigator...")
             self.navigator = TurtleBot4Navigator()
         return self.navigator
 
-    # ------------------------------------------
-    # ACCIONES DEL ROBOT
-    # ------------------------------------------
     def undock(self):
         nav = self.get_nav()
         print("Undocking...")
@@ -69,6 +67,16 @@ class RobotFrame(ttk.Frame):
         goal = nav.getPoseStamped([-13.0, 9.0], TurtleBot4Directions.EAST)
 
         nav.undock()
-        nav.startToPose(goal)
 
         print("Moviéndose al objetivo...")
+        nav.startToPose(goal)
+
+    def mover_a_posicion(self):
+        nav = self.get_nav()
+
+        goal = nav.getPoseStamped([self.posicion_x, self.posicion_y], TurtleBot4Directions.EAST)
+
+        nav.undock()
+
+        print("Moviéndose al objetivo...")
+        nav.startToPose(goal)

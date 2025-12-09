@@ -66,6 +66,8 @@ class Comunicador():
 
         self.lista_mensajes_grafica = []
 
+        self.movimiento_robot = RobotFrame()
+
     # Conectar al servidor MQTT
 
     def connect_mqtt(self):
@@ -304,8 +306,8 @@ class Comunicador():
         from_node = getattr(mp, "from")
         contacto = num_to_id(from_node)
 
-        #patth = "/home/alexg/ros2_jazzy/install/meshtastic_package/share/meshtastic_package/data/"
-        patth = "/home/jarain78/ros2_ws/install/meshtastic_package/share/meshtastic_package/data/"
+        patth = "/home/alexg/turtlebot4_ws/install/meshtastic_package/share/meshtastic_package/data/"
+        #patth = "/home/jarain78/ros2_ws/install/meshtastic_package/share/meshtastic_package/data/"
 
         self.dispositivo.guardarContactos(contacto, patth + "contactos.json", from_node)
 
@@ -367,10 +369,35 @@ class Comunicador():
             if self.debug: print(f"*** Decryption failed: {str(e)}")
             return
         
-    def mover_robot(self, mensaje):
+    def mover_robot(self, mensaje)-> None:
         lista = mensaje.split()
         #print(lista)
         if lista[0] == "mover_robot":
-            print("El robot se va a mover")
+            mensaje = "El robot se va a mover"
+            #self.mixin(mensaje)
+            self.movimiento_robot.run("mover", 0, 0)
 
-            RobotFrame.mover_robot_meshtastic()
+        elif lista[0] == "mover_robot_posicion":
+            mensaje = "El robot se va a mover"
+            #self.mixin(mensaje)
+            try:
+                x = float(lista[1])
+                y = float(lista[2])
+            except (ValueError, IndexError) as e:
+                raise ValueError(f"Error: las posiciones recibidas no son válidas: {lista[1:]}. Descripcion: {e}")
+            self.movimiento_robot.run("mover_posicion", x, y)
+
+        elif lista[0] == "iniciar_robot":
+            mensaje = "El robot se va a iniciar"
+            #self.mixin(mensaje)
+            self.movimiento_robot.run("iniciar", 0, 0)
+
+        elif lista[0] == "dock":
+            mensaje = "El robot se va a dockear"
+            #self.mixin(mensaje)
+            self.movimiento_robot.run("dock", 0, 0)
+
+        elif lista[0] == "undock":
+            mensaje = "El robot se va a undockear"
+            #self.mixin(mensaje)
+            self.movimiento_robot.run("undock", 0, 0)

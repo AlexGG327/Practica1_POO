@@ -5,7 +5,6 @@ from meshtastic_package.principal import MainApp
 
 
 def ros_spin(app):
-    # Ya NO llamamos a rclpy.init aquí
     executor = MultiThreadedExecutor()
     executor.add_node(app)
 
