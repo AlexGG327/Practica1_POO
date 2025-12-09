@@ -8,6 +8,7 @@ class MapaFrame(ttk.Frame):
     def __init__(self, parent):
         super().__init__(parent, padding=20)
 
+        
         #Titulo
         ttk.Label(self, text="Mapa", font=("Segoe UI", 16, "bold")).grid(row=0, column=0, columnspan=2, pady=10)
 

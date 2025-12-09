@@ -1,28 +1,38 @@
-#   ros2 run meshtastic_package mestastic_node
-
 import threading
-
 import rclpy
+from rclpy.executors import MultiThreadedExecutor
 from meshtastic_package.principal import MainApp
 
+
+def ros_spin(app):
+    # Ya NO llamamos a rclpy.init aquí
+    executor = MultiThreadedExecutor()
+    executor.add_node(app)
+
+    app.executor = executor
+
+    print("ROS2 executor running in background thread")
+    executor.spin()
+
+    app.destroy_node()
+
+
 def main(args=None):
-    # Inicializa ROS 2
+    # 1) Inicializar ROS ANTES de crear MainApp
     rclpy.init(args=args)
 
-    # Crea el nodo (que también monta la GUI Tkinter)
-    nodo = MainApp()
+    # 2) Crear MainApp (ya no dará error)
+    app = MainApp()
 
-    # Lanza el spin de ROS2 en un hilo en segundo plano
-    spin_thread = threading.Thread(target=rclpy.spin, args=(nodo,), daemon=True)
-    spin_thread.start()
+    # 3) Lanzar ROS en segundo plano
+    ros_thread = threading.Thread(target=ros_spin, args=(app,), daemon=True)
+    ros_thread.start()
 
-    try:
-        # Bucle principal de Tkinter en el hilo principal
-        nodo.run()
-    finally:
-        # Al cerrar la ventana, paramos ROS2
-        nodo.destroy_node()
-        rclpy.shutdown()
+    # 4) Tkinter en el hilo principal
+    app.run()
+
+    # 5) Al salir de la GUI → apagar ROS
+    rclpy.shutdown()
 
 
 if __name__ == "__main__":

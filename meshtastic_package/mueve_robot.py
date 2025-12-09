@@ -3,52 +3,30 @@ from turtlebot4_navigation.turtlebot4_navigator import TurtleBot4Directions, Tur
 
 import threading
 
-from typing import TypeVar, Generic
+def mueve_turtlebot():
+    rclpy.init()
 
-class Mover_Robot:
-    def __init__(self):
-        #rclpy.init()
-        self.navigator = TurtleBot4Navigator()
+    navigator = TurtleBot4Navigator()
+    
+    # Start on dock
+    if not navigator.getDockedStatus():
+        navigator.info('Docking')
+        navigator.dock()
 
-    def iniciar_turtlebot(self):
-        if not self.navigator.getDockedStatus():
-            self.navigator.info('Docking')
-            self.navigator.dock()
+    # Set initial pose
+    initial_pose = navigator.getPoseStamped([0.0, 0.0], TurtleBot4Directions.NORTH)
+    navigator.setInitialPose(initial_pose)
 
-        # Set initial pose
-        initial_pose = self.navigator.getPoseStamped([0.0, 0.0], TurtleBot4Directions.NORTH)
-        self.navigator.setInitialPose(initial_pose)
+    # Wait for Nav2
+    navigator.waitUntilNav2Active()
 
-        # Wait for Nav2
-        self.navigator.waitUntilNav2Active()
+    # Set goal poses
+    goal_pose = navigator.getPoseStamped([-0.5, 0.0], TurtleBot4Directions.EAST)
 
-    def undock_rob(self):
-        print("Undocking...")
-        self.navigator.undock()
-        print("Undocked.")
+    # Undock
+    navigator.undock()
 
-    def dock_rob(self):
-        print("Docking...")
-        self.navigator.dock()
-        print("Docked.")
+    # Go to each goal pose
+    navigator.startToPose(goal_pose)
 
-    def mover_rob_meshtastic(self):
-        # Set goal poses
-        goal_pose = self.navigator.getPoseStamped([-0.5, 0.0], TurtleBot4Directions.EAST)
-
-        # Undock
-        self.navigator.undock()
-
-        # Go to each goal pose
-        self.navigator.startToPose(goal_pose)
-        
-
-    def mover_rob_meshtastic_posicion(self, x_destino:float, y_destino:float):
-        # Set goal poses
-        goal_pose = self.navigator.getPoseStamped([x_destino, y_destino], TurtleBot4Directions.EAST)
-
-        # Undock
-        self.navigator.undock()
-
-        # Go to each goal pose
-        self.navigator.startToPose(goal_pose)
+    rclpy.shutdown()

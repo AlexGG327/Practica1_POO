@@ -13,36 +13,14 @@ import json
 from ament_index_python.packages import get_package_share_directory
 import os
 
-from typing import TypeVar, Generic
-from abc import ABC, abstractmethod
-
 from meshtastic_package.fileDispositivo import Dispositivo
 from meshtastic_package.robot import RobotFrame
-
-T = TypeVar('T')
 
 def num_to_id(num):
     """Convierte un número de nodo Meshtastic a su representación tipo !abcd1234"""
     return f"!{num:08x}"
 
-class RobotMixin:
-    def mixin(self, mensaje:str)-> None:
-        print(f"[RobotMixin] Usando comando:'{mensaje}'")
-
-class ComunicadorAbst(ABC):
-    @abstractmethod
-    def conecta(self):
-        pass
-
-    @abstractmethod
-    def desconecta(self):
-        pass
-
-    @abstractmethod
-    def envia_mensaje(self, destino, texto):
-        pass
-
-class Comunicador(ComunicadorAbst, RobotMixin):
+class Comunicador():
     def __init__(self):
         config_path = os.path.join(
             get_package_share_directory('meshtastic_package'),
@@ -90,17 +68,7 @@ class Comunicador(ComunicadorAbst, RobotMixin):
 
     # Conectar al servidor MQTT
 
-    def conecta(self):
-        return self.connect_mqtt()
-
-    def desconecta(self):
-        return self.disconnect_mqtt()
-
-    def envia_mensaje(self, destino, texto):
-        self.message_text = texto
-        self.send_message(destino, False)
-
-    def connect_mqtt(self)-> None:
+    def connect_mqtt(self):
         if "tls_configured" not in self.connect_mqtt.__dict__:          #Persistent variable to remember if we've configured TLS yet
             self.tls_configured = False
 
@@ -156,7 +124,7 @@ class Comunicador(ComunicadorAbst, RobotMixin):
 
     # Enviar mensajes
 
-    def send_message(self, destination_id, Directo_o_noDirecto)-> None:
+    def send_message(self, destination_id, Directo_o_noDirecto):
         if Directo_o_noDirecto == True:
             with open("data/contactos.json", "r", encoding="utf-8") as archivo:
                 contactos = json.load(archivo)
@@ -178,7 +146,7 @@ class Comunicador(ComunicadorAbst, RobotMixin):
         else:
             return
 
-    def send_traceroute(self, destination_id)-> None:
+    def send_traceroute(self, destination_id):
         if not self.client.is_connected():
             self.connect_mqtt()
         if self.debug: print(f"Sending Traceroute Packet to {str(destination_id)}")
@@ -190,7 +158,7 @@ class Comunicador(ComunicadorAbst, RobotMixin):
         destination_id = int(destination_id[1:], 16)
         self.generate_mesh_packet(destination_id, encoded_message)
 
-    def send_node_info(self, destination_id, want_response)-> None:
+    def send_node_info(self, destination_id, want_response):
         if self.client.is_connected():
             user_payload = mesh_pb2.User()
             setattr(user_payload, "id", self.dispositivo.node_name)
@@ -206,7 +174,7 @@ class Comunicador(ComunicadorAbst, RobotMixin):
             encoded_message.want_response = want_response  # Request NodeInfo back
             self.generate_mesh_packet(destination_id, encoded_message)
 
-    def send_position(self, destination_id)-> None:
+    def send_position(self, destination_id):
         if self.client.is_connected():
             pos_time = int(time.time())
             latitude = int(float(self.lat) * 1e7)
@@ -229,7 +197,7 @@ class Comunicador(ComunicadorAbst, RobotMixin):
 
             self.generate_mesh_packet(destination_id, encoded_message)
 
-    def send_ack(self, destination_id, message_id)-> None:
+    def send_ack(self, destination_id, message_id):
         if self.debug: print("Sending ACK")
         encoded_message = mesh_pb2.Data()
         encoded_message.portnum = portnums_pb2.ROUTING_APP
@@ -239,7 +207,7 @@ class Comunicador(ComunicadorAbst, RobotMixin):
 
     """Estas funciones estaban llaman a generate_mesh_packet"""
 
-    def generate_mesh_packet(self, destination_id, encoded_message)-> None:
+    def generate_mesh_packet(self, destination_id, encoded_message):
         mesh_packet = mesh_pb2.MeshPacket()
 
         # Use the global message ID and increment it for the next call
@@ -298,7 +266,7 @@ class Comunicador(ComunicadorAbst, RobotMixin):
 
     # Recivir mensajes
 
-    def on_message(self, client, userdata, msg)-> None:
+    def on_message(self, client, userdata, msg):
         # Interpreta los mensajes recibidos de meshtastic a través de MQTT
         se = mqtt_pb2.ServiceEnvelope()
         try: # Se asegura de que el mensaje es correcto
@@ -336,8 +304,8 @@ class Comunicador(ComunicadorAbst, RobotMixin):
         from_node = getattr(mp, "from")
         contacto = num_to_id(from_node)
 
-        patth = "/home/alexg/ros2_jazzy/install/meshtastic_package/share/meshtastic_package/data/"
-        #patth = "/home/jarain78/ros2_ws/install/meshtastic_package/share/meshtastic_package/data/"
+        #patth = "/home/alexg/ros2_jazzy/install/meshtastic_package/share/meshtastic_package/data/"
+        patth = "/home/jarain78/ros2_ws/install/meshtastic_package/share/meshtastic_package/data/"
 
         self.dispositivo.guardarContactos(contacto, patth + "contactos.json", from_node)
 
@@ -381,7 +349,7 @@ class Comunicador(ComunicadorAbst, RobotMixin):
             nombreArchivo = patth + "mensaje_otro_recibido.json"
             self.dispositivo.guardarDatos(mp.decoded.payload.decode("utf-8"), nombreArchivo)
         
-    def decode_encrypted(self, mp)-> None:
+    def decode_encrypted(self, mp):
         # Desencripta el mensaje    
         try:
             key_bytes = base64.b64decode(self.key.encode('ascii'))
@@ -399,30 +367,10 @@ class Comunicador(ComunicadorAbst, RobotMixin):
             if self.debug: print(f"*** Decryption failed: {str(e)}")
             return
         
-    def mover_robot(self, mensaje)-> None:
+    def mover_robot(self, mensaje):
         lista = mensaje.split()
         #print(lista)
         if lista[0] == "mover_robot":
-            mensaje = "El robot se va a mover"
-            self.mixin(mensaje)
+            print("El robot se va a mover")
+
             RobotFrame.mover_robot_meshtastic()
-
-        elif lista[0] == "mover_robot_posicion":
-            mensaje = "El robot se va a mover"
-            self.mixin(mensaje)
-            try:
-                x = float(lista[1])
-                y = float(lista[2])
-            except (ValueError, IndexError) as e:
-                raise ValueError(f"Error: las posiciones recibidas no son válidas: {lista[1:]}. Descripcion: {e}")
-            RobotFrame.mover_robot_meshtastic_posicion(x, y)
-
-        elif lista[0] == "dock":
-            mensaje = "El robot se va a dockear"
-            self.mixin(mensaje)
-            RobotFrame.dock()
-
-        elif lista[0] == "undock":
-            mensaje = "El robot se va a undockear"
-            self.mixin(mensaje)
-            RobotFrame.undock()
