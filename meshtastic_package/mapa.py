@@ -24,7 +24,7 @@ class MapaFrame(ttk.Frame):
         ttk.Button(entry_frame, text="Actualizar mapa", command=self.leer_posiciones).grid(row=1, column=1)
 
     def leer_posiciones(self):
-        patth = "/home/alexg/ros2_jazzy/install/meshtastic_package/share/meshtastic_package/data/"
+        patth = "/home/alexg/turtlebot4_ws/install/meshtastic_package/share/meshtastic_package/data/"
 
         with open(patth + "mensaje_posicion_recibido.json", "r") as file_posiciones:
             datos_posiciones = json.load(file_posiciones)

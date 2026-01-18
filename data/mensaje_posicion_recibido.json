@@ -10,5 +10,7 @@
     "latitude_i: 426816816 longitude_i: -29657833 time: 1763974722 location_source: LOC_INTERNAL altitude_hae: 527 sats_in_view: 8 seq_number: 1 precision_bits: 32",
     "latitude_i: 426815366 longitude_i: -29657033 time: 1763974794 location_source: LOC_INTERNAL altitude_hae: 527 sats_in_view: 8 seq_number: 1 precision_bits: 32",
     "latitude_i: 0 longitude_i: 0 altitude: 0 time: 1763974818",
-    "latitude_i: 426815950 longitude_i: -29658200 time: 1763973799 location_source: LOC_INTERNAL altitude_hae: 526 sats_in_view: 7 seq_number: 1 precision_bits: 32"
+    "latitude_i: 426815950 longitude_i: -29658200 time: 1763973799 location_source: LOC_INTERNAL altitude_hae: 526 sats_in_view: 7 seq_number: 1 precision_bits: 32",
+    "latitude_i: 426815383 longitude_i: -29657950 time: 1765530362 location_source: LOC_INTERNAL altitude_hae: 530 sats_in_view: 11 seq_number: 1 precision_bits: 32",
+    "latitude_i: 426814650 longitude_i: -29657116 time: 1765530399 location_source: LOC_INTERNAL altitude_hae: 530 sats_in_view: 12 seq_number: 1 precision_bits: 32"
 ]

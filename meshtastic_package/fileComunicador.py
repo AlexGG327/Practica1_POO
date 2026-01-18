@@ -10,50 +10,23 @@ import base64
 import re
 import json
 
-from abc import ABC, abstractmethod
-
-#from ament_index_python.packages import get_package_share_directory
+from ament_index_python.packages import get_package_share_directory
 import os
 
-#from meshtastic_package.fileDispositivo import Dispositivo
-#from meshtastic_package.robot import RobotFrame
-
-from fileDispositivo import Dispositivo
-#from robot import RobotFrame
+from meshtastic_package.fileDispositivo import Dispositivo
+from meshtastic_package.robot import RobotFrame
 
 def num_to_id(num):
     """Convierte un número de nodo Meshtastic a su representación tipo !abcd1234"""
     return f"!{num:08x}"
-"""
-class ComunicadorAbst(ABC):
-    
-    @abstractmethod
-    def connect(self):
-        pass
 
-    @abstractmethod
-    def disconnect(self):
-        pass
-
-    @abstractmethod
-    def send_message(self, destino, texto):
-        pass
-
-    @abstractmethod
-    def process_message(self, mensaje):
-        pass
-"""
 class Comunicador():
     def __init__(self):
-        """
         config_path = os.path.join(
             get_package_share_directory('meshtastic_package'),
             'static',
             'config.json'
         )
-        """
-        config_path = "/home/alexg/Documentos/GitHub/Practica_POO/meshtastic_package/static/config.json"
-
         self.callback_mensaje_recibido = None
 
         with open(config_path, "r", encoding="utf-8") as archivo:
@@ -92,6 +65,8 @@ class Comunicador():
         self.dispositivo = Dispositivo(self.root_topic, self.channel, self.debug)
 
         self.lista_mensajes_grafica = []
+
+        self.movimiento_robot = RobotFrame()
 
     # Conectar al servidor MQTT
 
@@ -331,9 +306,9 @@ class Comunicador():
         from_node = getattr(mp, "from")
         contacto = num_to_id(from_node)
 
-        #patth = "/home/alexg/ros2_jazzy/install/meshtastic_package/share/meshtastic_package/data/"
-        patth = 'meshtastic_package/data/'
-        
+        patth = "/home/alexg/turtlebot4_ws/install/meshtastic_package/share/meshtastic_package/data/"
+        #patth = "/home/jarain78/ros2_ws/install/meshtastic_package/share/meshtastic_package/data/"
+
         self.dispositivo.guardarContactos(contacto, patth + "contactos.json", from_node)
 
         contacto = Dispositivo.queContactoEs(from_node, patth +  "contactos.json")
@@ -346,7 +321,7 @@ class Comunicador():
             print("Mensaje: ", mp.decoded.payload.decode("utf-8"))
             print("\n")
 
-            #self.mover_robot(mp.decoded.payload.decode("utf-8"))
+            self.mover_robot(mp.decoded.payload.decode("utf-8"))
             
             # Mesaje de texto
             self.lista_mensajes_grafica.append(f"Mensaje recibido de: {contacto}\nMensaje: {mp.decoded.payload.decode('utf-8')}\n\n")
@@ -393,12 +368,36 @@ class Comunicador():
             if self.print_message_packet: print(f"failed to decrypt: \n{mp}")
             if self.debug: print(f"*** Decryption failed: {str(e)}")
             return
-    """
-    def mover_robot(self, mensaje):
+        
+    def mover_robot(self, mensaje)-> None:
         lista = mensaje.split()
         #print(lista)
         if lista[0] == "mover_robot":
-            print("El robot se va a mover")
+            mensaje = "El robot se va a mover"
+            #self.mixin(mensaje)
+            self.movimiento_robot.run("mover", 0, 0)
 
-            RobotFrame.mover_robot_meshtastic()
-    """
+        elif lista[0] == "mover_robot_posicion":
+            mensaje = "El robot se va a mover"
+            #self.mixin(mensaje)
+            try:
+                x = float(lista[1])
+                y = float(lista[2])
+            except (ValueError, IndexError) as e:
+                raise ValueError(f"Error: las posiciones recibidas no son válidas: {lista[1:]}. Descripcion: {e}")
+            self.movimiento_robot.run("mover_posicion", x, y)
+
+        elif lista[0] == "iniciar_robot":
+            mensaje = "El robot se va a iniciar"
+            #self.mixin(mensaje)
+            self.movimiento_robot.run("iniciar", 0, 0)
+
+        elif lista[0] == "dock":
+            mensaje = "El robot se va a dockear"
+            #self.mixin(mensaje)
+            self.movimiento_robot.run("dock", 0, 0)
+
+        elif lista[0] == "undock":
+            mensaje = "El robot se va a undockear"
+            #self.mixin(mensaje)
+            self.movimiento_robot.run("undock", 0, 0)
